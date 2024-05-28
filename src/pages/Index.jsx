@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Link, Stack, Textarea, VStack, Text, useColorModeValue } from "@chakra-ui/react";
+import { useState, useRef } from "react";
+import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Link, Stack, Textarea, VStack, Text, useColorModeValue, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 
 const Index = () => {
@@ -9,6 +9,9 @@ const Index = () => {
   ]);
 
   const [newPost, setNewPost] = useState({ title: "", content: "", tags: "" });
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
+  const cancelRef = useRef();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -19,6 +22,21 @@ const Index = () => {
     e.preventDefault();
     setPosts([newPost, ...posts]);
     setNewPost({ title: "", content: "", tags: "" });
+  };
+
+  const openDeleteDialog = (post) => {
+    setPostToDelete(post);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setPostToDelete(null);
+    setIsDeleteDialogOpen(false);
+  };
+
+  const handleDeletePost = () => {
+    setPosts(posts.filter((post) => post !== postToDelete));
+    closeDeleteDialog();
   };
 
   const bg = useColorModeValue("gray.50", "gray.700");
@@ -57,7 +75,10 @@ const Index = () => {
           <VStack spacing={8} align="start">
             {posts.map((post, index) => (
               <Box key={index} p={4} bg={bg} borderRadius="md" w="full">
-                <Heading as="h2" size="md" mb={2}>{post.title}</Heading>
+                <Flex justify="space-between" align="center">
+                  <Heading as="h2" size="md" mb={2}>{post.title}</Heading>
+                  <Button colorScheme="red" size="sm" onClick={() => openDeleteDialog(post)}>Delete</Button>
+                </Flex>
                 <Text>{post.content}</Text>
                 {post.tags && <Text mt={2} color="gray.500">Tags: {post.tags}</Text>}
               </Box>
@@ -81,6 +102,33 @@ const Index = () => {
           </VStack>
         </Box>
       </Flex>
+
+      <AlertDialog
+        isOpen={isDeleteDialogOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={closeDeleteDialog}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Post
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure you want to delete this post? This action cannot be undone.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={closeDeleteDialog}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={handleDeletePost} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Container>
   );
 };
