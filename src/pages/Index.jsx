@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Link, Stack, Textarea, VStack, Text } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, FormControl, FormLabel, Heading, Input, Link, Stack, Textarea, VStack, Text, useColorModeValue } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 
 const Index = () => {
@@ -21,9 +21,12 @@ const Index = () => {
     setNewPost({ title: "", content: "", tags: "" });
   };
 
+  const bg = useColorModeValue("gray.50", "gray.700");
+  const navBg = useColorModeValue("gray.100", "gray.900");
+
   return (
     <Container maxW="container.xl" p={4}>
-      <Flex as="nav" bg="gray.100" p={4} mb={8} borderRadius="md" justifyContent="space-between" alignItems="center">
+      <Flex as="nav" bg={navBg} p={4} mb={8} borderRadius="md" justifyContent="space-between" alignItems="center">
         <Heading as="h1" size="lg">
           My Blog
         </Heading>
@@ -53,7 +56,7 @@ const Index = () => {
         <Box flex="3" mr={{ md: 8 }}>
           <VStack spacing={8} align="start">
             {posts.map((post, index) => (
-              <Box key={index} p={4} bg="gray.50" borderRadius="md" w="full">
+              <Box key={index} p={4} bg={bg} borderRadius="md" w="full">
                 <Heading as="h2" size="md" mb={2}>{post.title}</Heading>
                 <Text>{post.content}</Text>
                 {post.tags && <Text mt={2} color="gray.500">Tags: {post.tags}</Text>}
@@ -63,13 +66,13 @@ const Index = () => {
         </Box>
         <Box flex="1" mt={{ base: 8, md: 0 }}>
           <VStack spacing={4} align="start">
-            <Box p={4} bg="gray.50" borderRadius="md" w="full">
+            <Box p={4} bg={bg} borderRadius="md" w="full">
               <Heading as="h3" size="sm" mb={2}>Recent Posts</Heading>
               {posts.slice(0, 3).map((post, index) => (
                 <Text key={index}>{post.title}</Text>
               ))}
             </Box>
-            <Box p={4} bg="gray.50" borderRadius="md" w="full">
+            <Box p={4} bg={bg} borderRadius="md" w="full">
               <Heading as="h3" size="sm" mb={2}>Categories</Heading>
               <Text>Category 1</Text>
               <Text>Category 2</Text>
